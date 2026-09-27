@@ -1,16 +1,13 @@
 name: Update Macro Data
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "30 22 * * 1-5"
+on: [workflow_dispatch]
 
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -18,12 +15,10 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install dependencies
-        run: |
-          pip install requests
+      - name: Install requests
+        run: pip install requests
 
-      - name: Update macro data
+      - name: Run script
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
-        run: |
-          python update_macro.py
+        run: python update_macro.py
