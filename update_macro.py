@@ -8,8 +8,7 @@ FRED_API_KEY = os.environ["FRED_API_KEY"]
 CSV_FILE = "macro.csv"
 
 # 최초 전고점
-# 나중에 실제 현재 전고점 값으로 수정
-INITIAL_NDX_PEAK = 30667.56
+INITIAL_NDX_PEAK = 26000.0
 
 
 def get_latest_fred_value(series_id):
@@ -38,11 +37,11 @@ def get_latest_fred_value(series_id):
     raise RuntimeError(f"No valid data found for {series_id}")
 
 
-def get_latest_ndx():
+def get_ndx_data():
     url = "https://query1.finance.yahoo.com/v8/finance/chart/^NDX"
 
     params = {
-        "range": "5d",
+        "range": "1y",
         "interval": "1d",
         "includePrePost": "false",
     }
@@ -65,7 +64,7 @@ def get_latest_ndx():
     timestamps = result["timestamp"]
     closes = result["indicators"]["quote"][0]["close"]
 
-    latest = None
+    data = []
 
     for timestamp, close in zip(timestamps, closes):
         if close is None:
@@ -76,15 +75,17 @@ def get_latest_ndx():
             tz=timezone.utc
         ).strftime("%Y-%m-%d")
 
-        latest = {
+        data.append({
             "date": date,
-            "value": float(close),
-        }
+            "close": float(close),
+        })
 
-    if latest is None:
-        raise RuntimeError("No valid NDX data found")
+    if len(data) < 200:
+        raise RuntimeError(
+            f"Not enough NDX data for 200-day SMA: {len(data)} days"
+        )
 
-    return latest
+    return data
 
 
 def load_existing_data():
@@ -104,16 +105,21 @@ def load_existing_data():
 
 def save_data(data):
     with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
+
         fieldnames = [
             "date",
             "VIXCLS",
             "DGS10",
             "NDX",
+            "NDX_SMA200",
             "NDX_PEAK",
             "NDX_DD",
         ]
 
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(
+            f,
+            fieldnames=fieldnames
+        )
 
         writer.writeheader()
 
@@ -139,72 +145,103 @@ print("DGS10:", dgs10)
 # 2. NDX 데이터
 # --------------------------------------------------
 
-ndx = get_latest_ndx()
+ndx_data = get_ndx_data()
 
-print("NDX:", ndx)
+latest_ndx = ndx_data[-1]
+
+print("NDX:", latest_ndx)
 
 
 # --------------------------------------------------
-# 3. 기존 데이터 읽기
+# 3. 200일 SMA 계산
+# --------------------------------------------------
+
+last_200_closes = [
+    row["close"]
+    for row in ndx_data[-200:]
+]
+
+ndx_sma200 = sum(last_200_closes) / 200
+
+print("NDX 200-day SMA:", ndx_sma200)
+
+
+# --------------------------------------------------
+# 4. 기존 데이터 읽기
 # --------------------------------------------------
 
 data = load_existing_data()
 
 
 # --------------------------------------------------
-# 4. 기존 전고점 찾기
+# 5. 기존 전고점 찾기
 # --------------------------------------------------
 
 ndx_peak = INITIAL_NDX_PEAK
 
 for row in data.values():
+
     value = row.get("NDX_PEAK", "")
 
     if value:
         try:
-            ndx_peak = max(ndx_peak, float(value))
+            ndx_peak = max(
+                ndx_peak,
+                float(value)
+            )
         except ValueError:
             pass
 
 
 # --------------------------------------------------
-# 5. 새로운 NDX가 전고점을 돌파하면 갱신
+# 6. 새로운 NDX가 전고점을 돌파하면 갱신
 # --------------------------------------------------
 
-if ndx["value"] > ndx_peak:
-    ndx_peak = ndx["value"]
-
-
-# --------------------------------------------------
-# 6. NDX 낙폭 계산
-# --------------------------------------------------
-
-ndx_dd = (ndx["value"] / ndx_peak - 1) * 100
+if latest_ndx["close"] > ndx_peak:
+    ndx_peak = latest_ndx["close"]
 
 
 # --------------------------------------------------
-# 7. 날짜별 데이터 저장
+# 7. NDX 낙폭 계산
 # --------------------------------------------------
 
-date = ndx["date"]
+ndx_dd = (
+    latest_ndx["close"] / ndx_peak - 1
+) * 100
+
+
+# --------------------------------------------------
+# 8. 오늘 데이터 저장
+# --------------------------------------------------
+
+date = latest_ndx["date"]
 
 data[date] = {
+
     "date": date,
+
     "VIXCLS": vix["value"],
+
     "DGS10": dgs10["value"],
-    "NDX": ndx["value"],
+
+    "NDX": latest_ndx["close"],
+
+    "NDX_SMA200": ndx_sma200,
+
     "NDX_PEAK": ndx_peak,
+
     "NDX_DD": ndx_dd,
 }
 
 
 # --------------------------------------------------
-# 8. 저장
+# 9. 저장
 # --------------------------------------------------
 
 save_data(data)
 
 print(f"Saved: {date}")
-print(f"NDX: {ndx['value']}")
+print(f"NDX: {latest_ndx['close']}")
+print(f"NDX_SMA200: {ndx_sma200}")
 print(f"NDX_PEAK: {ndx_peak}")
 print(f"NDX_DD: {ndx_dd:.2f}%")
