@@ -9,7 +9,7 @@ CSV_FILE = "macro.csv"
 
 # 최초 전고점
 # 나중에 실제 현재 전고점 값으로 수정
-INITIAL_NDX_PEAK = 26000.0
+INITIAL_NDX_PEAK = 30668
 
 
 def get_latest_fred_value(series_id):
