@@ -114,6 +114,7 @@ def save_data(data):
             "NDX_SMA200",
             "NDX_PEAK",
             "NDX_DD",
+            "QLD_TARGET",
         ]
 
         writer = csv.DictWriter(
@@ -209,6 +210,16 @@ ndx_dd = (
     latest_ndx["close"] / ndx_peak - 1
 ) * 100
 
+# --------------------------------------------------
+# QLD 기본 목표 비중
+# --------------------------------------------------
+
+if latest_ndx["close"] >= ndx_sma200:
+    qld_target = 100
+else:
+    qld_target = 50
+
+print("QLD_TARGET:", qld_target)
 
 # --------------------------------------------------
 # 8. 오늘 데이터 저장
@@ -231,8 +242,9 @@ data[date] = {
     "NDX_PEAK": ndx_peak,
 
     "NDX_DD": ndx_dd,
-}
 
+    "QLD_TARGET": qld_target,
+}
 
 # --------------------------------------------------
 # 9. 저장
