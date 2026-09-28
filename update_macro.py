@@ -210,6 +210,7 @@ if latest_ndx["close"] > ndx_peak:
 ndx_dd = (
     latest_ndx["close"] / ndx_peak - 1
 ) * 100
+ndx_dd = round(ndx_dd, 6)
 
 # --------------------------------------------------
 # QLD 기본 목표 비중
