@@ -1,7 +1,7 @@
 import os
 import csv
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 FRED_API_KEY = os.environ["FRED_API_KEY"]
 
@@ -228,6 +228,42 @@ if vix["value"] >= 35:
     qld_target -= 50
 elif vix["value"] >= 25:
     qld_target -= 25
+
+
+# --------------------------------------------------
+# DGS10 3개월 변화
+# --------------------------------------------------
+
+# 현재까지의 데이터를 날짜순으로 정렬
+sorted_dates = sorted(data.keys())
+
+current_date = latest_ndx["date"]
+
+# 현재 날짜에서 약 3개월 전 날짜 찾기
+current_dt = datetime.strptime(current_date, "%Y-%m-%d")
+
+target_dt = current_dt - timedelta(days=90)
+
+# 가장 가까운 과거 데이터 찾기
+past_date = None
+
+for date in sorted_dates:
+    date_dt = datetime.strptime(date, "%Y-%m-%d")
+
+    if date_dt <= target_dt:
+        past_date = date
+    else:
+        break
+
+if past_date is None:
+    raise RuntimeError("Not enough DGS10 history for 3-month change")
+
+current_dgs10 = float(dgs10["value"])
+past_dgs10 = float(data[past_date]["DGS10"])
+
+dgs10_3m_change = current_dgs10 - past_dgs10
+
+print("DGS10 3M change:", dgs10_3m_change)
 
 # --------------------------------------------------
 # 8. 오늘 데이터 저장
