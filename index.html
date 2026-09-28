@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QLD Strategy Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .updated {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .target-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .target-label {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .target {
+            font-size: 64px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .label {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .rules {
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .rule {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rule:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .target {
+                font-size: 52px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>QLD Strategy Dashboard</h1>
+
+    <div class="updated" id="updated">
+        업데이트 확인 중...
+    </div>
+
+    <div class="target-box">
+        <div class="target-label">현재 QLD Target</div>
+        <div class="target" id="qldTarget">-</div>
+    </div>
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="label">NDX</div>
+            <div class="value" id="ndx">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">NDX 200일 이동평균</div>
+            <div class="value" id="sma200">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">200일선 대비</div>
+            <div class="value" id="smaDistance">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">NDX 고점</div>
+            <div class="value" id="peak">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">NDX Drawdown</div>
+            <div class="value" id="drawdown">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">VIX</div>
+            <div class="value" id="vix">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">DGS10</div>
+            <div class="value" id="dgs10">-</div>
+        </div>
+
+        <div class="card">
+            <div class="label">DGS10 3개월 변화</div>
+            <div class="value" id="dgs10Change">-</div>
+        </div>
+
+    </div>
+
+    <div class="rules">
+
+        <h2>전략 적용 현황</h2>
+
+        <div class="rule">
+            <span>NDX / 200일선</span>
+            <strong id="ruleSma">-</strong>
+        </div>
+
+        <div class="rule">
+            <span>VIX 조정</span>
+            <strong id="ruleVix">-</strong>
+        </div>
+
+        <div class="rule">
+            <span>DGS10 조정</span>
+            <strong id="ruleDgs10">-</strong>
+        </div>
+
+        <div class="rule">
+            <span>Drawdown</span>
+            <strong id="ruleDrawdown">-</strong>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function loadData() {
+
+    try {
+
+        /*
+         * timestamp를 붙여서 브라우저 캐시 때문에
+         * 오래된 summary.json을 읽는 것을 방지한다.
+         */
+        const response = await fetch(
+            "summary.json?t=" + Date.now(),
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error("summary.json을 불러오지 못했습니다.");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("qldTarget").textContent =
+            data.qld_target + "%";
+
+        document.getElementById("ndx").textContent =
+            formatNumber(data.ndx);
+
+        document.getElementById("sma200").textContent =
+            formatNumber(data.ndx_sma200);
+
+        document.getElementById("smaDistance").textContent =
+            formatPercent(data.ndx_distance_from_sma200);
+
+        document.getElementById("peak").textContent =
+            formatNumber(data.ndx_peak);
+
+        document.getElementById("drawdown").textContent =
+            formatPercent(data.ndx_drawdown);
+
+        document.getElementById("vix").textContent =
+            formatNumber(data.vix);
+
+        document.getElementById("dgs10").textContent =
+            formatPercent(data.dgs10);
+
+        document.getElementById("dgs10Change").textContent =
+            formatSignedPercent(data.dgs10_3m_change);
+
+        document.getElementById("ruleSma").textContent =
+            data.rules.ndx_vs_sma200;
+
+        document.getElementById("ruleVix").textContent =
+            formatSignedPercent(data.rules.vix_adjustment);
+
+        document.getElementById("ruleDgs10").textContent =
+            formatSignedPercent(data.rules.dgs10_adjustment);
+
+        document.getElementById("ruleDrawdown").textContent =
+            data.rules.drawdown;
+
+        const updated =
+            new Date(data.updated_at_utc);
+
+        document.getElementById("updated").textContent =
+            "기준일: " + data.date +
+            " · 데이터 생성: " +
+            updated.toLocaleString("ko-KR");
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("updated").textContent =
+            "데이터를 불러오지 못했습니다.";
+
+    }
+
+}
+
+
+function formatNumber(value) {
+
+    if (value === null || value === undefined) {
+        return "-";
+    }
+
+    return Number(value).toLocaleString(
+        "en-US",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+function formatPercent(value) {
+
+    if (value === null || value === undefined) {
+        return "-";
+    }
+
+    return Number(value).toFixed(2) + "%";
+
+}
+
+
+function formatSignedPercent(value) {
+
+    if (value === null || value === undefined) {
+        return "-";
+    }
+
+    const number = Number(value);
+
+    if (number > 0) {
+        return "+" + number.toFixed(2) + "%";
+    }
+
+    return number.toFixed(2) + "%";
+
+}
+
+
+loadData();
+
+</script>
+
+</body>
+</html>
