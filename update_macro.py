@@ -8,7 +8,7 @@ FRED_API_KEY = os.environ["FRED_API_KEY"]
 CSV_FILE = "macro.csv"
 
 # 최초 전고점
-INITIAL_NDX_PEAK = 26000.0
+INITIAL_NDX_PEAK = 30770.63
 
 
 def get_latest_fred_value(series_id):
