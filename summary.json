@@ -1,5 +1,5 @@
 {
-  "updated_at_utc": "2026-09-28T13:03:48.533905+00:00",
+  "updated_at_utc": "2026-09-28T13:11:16.458126+00:00",
   "date": "2026-09-25",
   "ndx": 30608.130859375,
   "ndx_sma200": 27353.820595703124,
@@ -10,6 +10,18 @@
   "dgs10": 5.18,
   "dgs10_3m_change": 0.7999999999999998,
   "qld_target": 75.0,
+  "confirmation": {
+    "status": "WAITING",
+    "count": 1,
+    "required": 3,
+    "confirmed_target": null,
+    "recent_targets": [
+      {
+        "date": "2026-09-25",
+        "target": 75.0
+      }
+    ]
+  },
   "rules": {
     "ndx_vs_sma200": "100%",
     "vix_adjustment": 0,
