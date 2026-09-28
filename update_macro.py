@@ -106,17 +106,17 @@ def load_existing_data():
 def save_data(data):
     with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
 
-            fieldnames = [
-                "date",
-                "VIXCLS",
-                "DGS10",
-                "DGS10_3M_CHANGE",
-                "NDX",
-                "NDX_SMA200",
-                "NDX_PEAK",
-                "NDX_DD",
-                "QLD_TARGET",
-            ]
+        fieldnames = [
+            "date",
+            "VIXCLS",
+            "DGS10",
+            "DGS10_3M_CHANGE",
+            "NDX",
+            "NDX_SMA200",
+            "NDX_PEAK",
+            "NDX_DD",
+            "QLD_TARGET",
+        ]
 
         writer = csv.DictWriter(
             f,
@@ -279,6 +279,8 @@ data[date] = {
     "VIXCLS": vix["value"],
 
     "DGS10": dgs10["value"],
+
+    "DGS10_3M_CHANGE": dgs10_3m_change,
 
     "NDX": latest_ndx["close"],
 
