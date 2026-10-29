@@ -1,14 +1,14 @@
 {
-  "updated_at_utc": "2026-10-29T12:35:15.247337+00:00",
-  "date": "2026-10-28",
-  "ndx": 29813.16015625,
-  "ndx_sma200": 27894.403203125,
+  "updated_at_utc": "2026-10-29T18:50:56.639686+00:00",
+  "date": "2026-10-29",
+  "ndx": 29297.578125,
+  "ndx_sma200": 27912.18134765625,
   "ndx_peak": 31292.076171875,
-  "ndx_drawdown": -4.726168,
-  "ndx_distance_from_sma200": 6.878644935160483,
-  "vix": 17.52,
+  "ndx_drawdown": -6.373812,
+  "ndx_distance_from_sma200": 4.963412784146581,
+  "vix": 16.91,
   "dgs10": 4.99,
-  "dgs10_3m_change": 0.3100000000000005,
+  "dgs10_3m_change": 0.2400000000000002,
   "qld_target": 100.0,
   "confirmation": {
     "status": "CONFIRMED",
@@ -17,15 +17,15 @@
     "confirmed_target": 100.0,
     "recent_targets": [
       {
-        "date": "2026-10-26",
-        "target": 100.0
-      },
-      {
         "date": "2026-10-27",
         "target": 100.0
       },
       {
         "date": "2026-10-28",
+        "target": 100.0
+      },
+      {
+        "date": "2026-10-29",
         "target": 100.0
       }
     ]
