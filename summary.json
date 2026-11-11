@@ -1,15 +1,15 @@
 {
-  "updated_at_utc": "2026-11-11T10:32:08.315088+00:00",
-  "date": "2026-11-10",
-  "ndx": 27740.7890625,
-  "ndx_sma200": 28005.5403515625,
+  "updated_at_utc": "2026-11-11T18:29:02.587664+00:00",
+  "date": "2026-11-11",
+  "ndx": 28582.244140625,
+  "ndx_sma200": 28018.75287109375,
   "ndx_peak": 31292.076171875,
-  "ndx_drawdown": -11.348838,
-  "ndx_distance_from_sma200": -0.9453532613154181,
-  "vix": 19.92,
+  "ndx_drawdown": -8.659803,
+  "ndx_distance_from_sma200": 2.011121880134037,
+  "vix": 19.46,
   "dgs10": 4.88,
-  "dgs10_3m_change": 0.20000000000000018,
-  "qld_target": 50.0,
+  "dgs10_3m_change": 0.25,
+  "qld_target": 100.0,
   "confirmation": {
     "status": "WAITING",
     "count": 1,
@@ -17,21 +17,21 @@
     "confirmed_target": null,
     "recent_targets": [
       {
-        "date": "2026-11-06",
-        "target": 25.0
-      },
-      {
         "date": "2026-11-09",
         "target": 25.0
       },
       {
         "date": "2026-11-10",
         "target": 50.0
+      },
+      {
+        "date": "2026-11-11",
+        "target": 100.0
       }
     ]
   },
   "rules": {
-    "ndx_vs_sma200": "50%",
+    "ndx_vs_sma200": "100%",
     "vix_adjustment": 0,
     "dgs10_adjustment": 0,
     "drawdown": "Normal"
