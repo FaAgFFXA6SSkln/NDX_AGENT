@@ -1,31 +1,31 @@
 {
-  "updated_at_utc": "2026-11-25T12:21:00.140102+00:00",
-  "date": "2026-11-24",
-  "ndx": 26214.169921875,
-  "ndx_sma200": 28086.382255859375,
+  "updated_at_utc": "2026-11-25T22:13:54.719470+00:00",
+  "date": "2026-11-25",
+  "ndx": 26046.896484375,
+  "ndx_sma200": 28090.97853515625,
   "ndx_peak": 31292.076171875,
-  "ndx_drawdown": -16.227451,
-  "ndx_distance_from_sma200": -6.665907758888368,
-  "vix": 26.62,
-  "dgs10": 4.92,
-  "dgs10_3m_change": 0.2599999999999998,
+  "ndx_drawdown": -16.762006,
+  "ndx_distance_from_sma200": -7.276649505901167,
+  "vix": 26.36,
+  "dgs10": 4.91,
+  "dgs10_3m_change": 0.2400000000000002,
   "qld_target": 25.0,
   "confirmation": {
     "status": "WAITING",
-    "count": 1,
+    "count": 2,
     "required": 3,
     "confirmed_target": null,
     "recent_targets": [
-      {
-        "date": "2026-11-20",
-        "target": 25.0
-      },
       {
         "date": "2026-11-23",
         "target": 0.0
       },
       {
         "date": "2026-11-24",
+        "target": 25.0
+      },
+      {
+        "date": "2026-11-25",
         "target": 25.0
       }
     ]
